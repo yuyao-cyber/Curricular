@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!-- 
+File: cancel.html
+Purpose: Displayed after the cancel button on the main page is pushed. Used to cancel an appointment
+Authors: Max Hopkins
+-->
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+	</script>
+</head>
+
+<body>
+	<h1 style="text-align:center;">
+		Please enter your confirmation code below to cancel your appointment
+	</h1>
+	<br>
+	<div class="personal">
+		<div class="col">
+		<label for="code">Enter confirmation code here:</label>
+		<input name="code" type="text" />
+		</div>
+	</div>
+	<br>
+	<div style="text-align:center;">
+		<button class="cancel" type="button" onclick="cancel()">Cancel appointment</button>
+		<button class="cancel" type="button" onclick="returnhome()">Return Home</button>
+	</div>
+
+	<p class="info"> <p>
+
+<script type="text/javascript">
+  function returnhome(){
+    //returns to the main page after the return home button is pressed
+    location.href='/index'
+  };
+
+  function cancel(){
+    Obj=$(".info");
+
+    //take the value from the input bar
+    var code = ($(".personal").find("input[name='code']").val());
+
+    //send the confirmation code to the server
+    $.getJSON('/_cancel', {code:code},
+	    function(data){
+
+		//grabs whether the confirmation code exists
+	        var code_result=data.result.match;
+
+		//if appointment code exists
+		if(code_result=="true"){
+		    $(".info").html("Appointment cancelled! Return to the homepage to reschedule");
+		}
+		else{
+	    	    $(".info").html("Confirmation number not valid");
+	        }
+	    }
+    ); //end of getjson
+  };
+</script>
+</body>
+
+</html>

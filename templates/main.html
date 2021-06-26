@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<!--
+File: main.html
+Puropse: The main html template for the website. Includes searching and cancelling functionality
+Authors: Max Hopkins
+-->
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+	<script 
+	   src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+	</script>
+</head>
+
+
+<body>
+
+<h1 class="info"> Vaccine Scheduling System </h1>
+
+<p class="info">
+This is the official vaccine scheduling site. To schedule, fill out your home address and your 
+email address. We will use these to determine your location relative to other clinics, and to contact
+you to message you your confirmation code. 
+Once completed, we can use the information you provided to help with your search
+for a vaccine appointment. Please select the vaccine type, distance 
+requirements, and your available times to search for an appointment. Thank you, and stay safe!
+
+</p>
+
+<br>
+
+<!--h3 style="text-align:center;"> Please create your user profile here before proceeding </h3>
+
+<div style="text-align:center;">
+	<button type="button" class="button" onclick="userprofile()">Create User Profile</button>
+</div>
+-->
+<br>
+<br>
+<hr size="8" width="95%" color="black" > 
+
+
+<h2 style="text-align:center;">Personal Info:</h2>
+<br>
+<div class="personal">
+	<div class="col">
+	<label for="fname">First Name:</label>
+	<input name="fname" class="fname" type="text" />
+	<br>
+	<br>
+	</div>
+	<div class="col">
+	<label for="lname">Last Name:</label>
+	<input name="lname" class="lname" type="text" />
+	<br>
+	<br>
+	</div>
+	<div class="col">
+	<label for="email">Email address:</label>
+	<input name="email" class="email" type="text" />
+	<br>
+	<br>
+	</div>
+</div>
+<div class="personal">
+	<div class="col">
+	<label for="address">Address:</label>
+	<input name="address" id="address" type="text" />
+	<br>
+	<br>
+	</div>
+	<div class="col">
+	<label for="city">City:</label>
+	<input name="city" id="city" type="text" />
+	<br>
+	<br>
+	</div>
+	<div class="col">
+	<label for="state">State:</label>
+	<input name="state" id="state" type="text" />
+	<br>
+	<br>
+	</div>
+	<div class="col">
+	<label for="zip">ZIP code:</label>
+	<input name="zip" id="zip" type="text" />
+	<br>
+	<br>
+	</div>
+</div>
+<br>
+
+<h2 style="text-align:center;">Search Parameters:</h2>
+<br>
+<div class="center">
+	<div class = "child col">
+		<label>Vaccine Type:</label>
+	<select name="vaccine" id="type">
+		<option value="any">Any</option>
+		<option value="Moderna">Moderna</option>
+		<option value="Pfizer">Pfizer</option>
+		<option value="J&J">Johnson&Johnson</option>
+		<option value="AstroZenica">AstroZenica</option>
+	</select>
+	</div>
+
+	<div class = "child col">
+		<label>Maximum Distance:</label>
+	<select name="location" id="distance">
+		<option value="5000">Any</option>
+		<option value="10">10 miles</option>
+		<option value="15">15 miles</option>
+		<option value="20">20 miles</option>
+		<option value="25">25 miles</option>
+		<option value="30">30 miles</option>
+	</select>
+	</div>
+
+
+	<div class = "child col">
+		<label>Preferred Time:</label>
+	<select name="time" id="time">
+		<option value="any">Any</option>
+		<option value="Weekday am">Weekday/AM</option>
+		<option value="Weekday pm">Weekday/PM</option>
+		<option value="Weekend am">Weekend/AM</option>
+		<option value="Weekend pm">Weekend/PM</option>
+	</select>
+		<!--input type="checkbox" id="weekdayam" name="weekdayam" value="weekday am">
+		<label for="weekdayam">Weekday/AM</label><br>
+		<input type="checkbox" id="weekdaypm" name="weekdaypm" value="weekday pm">
+		<label for="weekdaypm">Weekday/PM</label><br><br>
+		<input type="checkbox" id="weekendam" name="weekendam" value="weekend am">
+		<label for="weekendam">Weekend/AM</label><br>
+		<input type="checkbox" id="weekendpm" name="weekendpm" value="weekend pm">
+		<label for="weekendpm">Weekend/PM</label--><br>
+	</div>
+
+
+
+</div>
+<br>
+<br>
+
+<div style="text-align:center;">
+	<button class="button" type="button" onclick="button()">Search!</button>
+</div>
+<br>
+<br>
+<div id="loading">
+</div>
+<hr size="8" width="95%" color="black" > 
+
+<p class=info> 
+If you need to cancel an appointment, click the button below. Please have your 
+confirmation number on hand to cancel. 
+</p>
+<br>
+<div style="text-align:center;">
+	<button class="cancel" type="button" onclick="cancel()">Cancel an appoinment</button>
+</div>
+
+<br>
+<br>
+
+<script type="text/javascript">
+
+  function button(){
+	//infoObj = $(".info");
+	//infoObj.each(function(i){
+	  //if (($(this).find("input[name='address']").val())==""){
+	      //console.log("EMPTY");
+	      
+	  //}
+	  //console.log($(this));
+	//});
+	
+	//grabs the vaccine type from the selector
+	var vaccine = ($("#type").val());
+	
+	//grabs the max distance from the selector
+	var distance = ($("#distance").val());
+
+	//grabs the users available time from the selector
+	var time = ($("#time").val());
+
+	//grabs the first name from the input
+	var fname = ($(".fname").val());
+
+	//grabs the last name from the input
+	var lname = ($(".lname").val());
+
+	//grabs the email from the input
+	var email = ($(".email").val());
+
+	//grabs the address from the input
+	var address = ($("#address").val());
+
+	//this concatenates all the different aspects of the address into one variable
+	address = address + " " + ($("#city").val());
+	address = address + " " + ($("#state").val());
+	address = address + " " + ($("#zip").val());
+
+	//used to create a loading icon when the user searches
+	var load = document.getElementById("loading");
+
+	//used to insert loading icon
+	var img = document.createElement("IMG");
+	
+	//used to let the user know that the search is active
+	var para = document.createElement("P");
+
+	//the image source to be displayed
+	img.src = "../static/loading.gif";
+
+	//defining the image CSS
+	img.className = "imgcenter";
+
+	//Add the image to the page
+	load.appendChild(img);
+
+	//Add text to the para object
+	para.innerHTML = "Searching, please wait...";
+	
+	//CSS for the searching confirmation
+	para.className = "wait";
+
+	//display the para object on the screen
+	load.appendChild(para);
+	  	
+	  	//send the search variables and user info to the server
+		$.getJSON('/_search', {vaccine:vaccine, distance:distance, time:time, address:address, fname:fname, lname:lname, email:email},
+			
+			//when the server succesfully returns the matches
+			function success(data){
+
+			    //load the page that displays the matches
+			    location.href='/confirmation'
+			}
+		);
+  	//location.href='/confirmation'
+  };
+
+  function cancel(){
+    //when the cancel button is pushed, load cancel.html
+    location.href='/cancel'
+  }
+
+</script>
+
+</body>
+
+
+
+</html>

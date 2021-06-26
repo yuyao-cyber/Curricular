@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<!--
+File: confirmation.html
+Purpose: Displays the matched appointments based on the search results
+Authors: Max Hopkins
+-->
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+	</script>
+</head>
+
+<body>
+<h1>SEARCH RESULTS: </h1>
+
+<div class="float-container">
+	<!--div class="float-child">
+	<h3>Search results 1</h3>
+	<p class="info">Info</p>
+	<button type="button" onclick="select()">Schedule</button>
+	</div-->
+
+</div>
+<br>
+<br>
+
+<script type="text/javascript">
+
+  window.onload = function(){
+    //call this javascript function on page load
+    load()
+  };
+
+  function select(){
+	//loads the scheduled appointments confirmation code
+  	location.href="/schedule"
+  };
+
+  function load(){
+    //this function is called on page load
+
+    //used to send a test JSON to the server
+    var temp = "test";
+
+	  $.getJSON('/_retreive', {temp:temp}, 
+	  //this retrieves the matches from the result{} dictionary from the server
+
+	    function(data){
+	      //grab the number of matches from the JSON
+	      var length = data.result.length; 
+
+	      //convert length into an int
+	      length = parseInt(length);
+	      
+	      //used to iterate through the length of the matches
+	      var i;
+
+	      //used to identify the divs of the dynamically generated appointment matches
+	      var resultx;
+
+	      //used to store a match from the results
+	      var match;
+
+	      //this loop iterates through the length of matches and dynamically creates divs for each
+	      //match which displays the information and a schedule button 
+	      for (i = 0; i < length; i++){
+		
+		//updates each loop to idnetify a new div
+		resultx = "result" + i;
+		
+		//grab an appointment from the list of results
+                match = data.result[i]
+
+		//split up the information from the appointment into an array
+		//used to populate the divs
+		var arr = match.split(",");
+
+		//The element which displays the location
+	        var loc = document.createElement("P");
+
+		//The element which displays the vaccine type
+		var vacc = document.createElement("P");
+
+		//The element which displays the appointment time/date
+		var time = document.createElement("P");
+
+		//The element which displays the clinic name
+		var head = document.createElement("H3");
+
+		//create the div for the appointment
+	        var div = document.createElement("DIV");
+
+		//create the element which allows the user to select the appointment
+		var btn = document.createElement("BUTTON");
+
+		//set the id of the elements of the dynamically created appointment
+		loc.id = resultx;
+		vacc.id = resultx;
+		time.id = resultx;
+		head.id = resultx;
+		div.id = resultx;
+		btn.id = resultx;
+
+		//name the button to schedule
+		btn.innerHTML = "SCHEDULE";
+
+		      //This function will grab the info depending on which button on the screen is
+		      //pressed and store the appoinment information into an array
+		      btn.onclick = function(){
+
+			  //the returnInfo will store the information for the selected appointment
+			  var returnInfo = [];
+
+			  //Create sibling object, used to collect data from the buttons siblings
+			  var prevSibling = this.previousElementSibling;
+
+			  //Get info from sibling object
+			  var sibling = prevSibling.innerHTML;
+
+			  //this section will split up unneccessary info
+			  var siblingInfo = sibling.split(" ");
+
+			  //Add info we need to returnInfo, this iteration is time
+			  var text = siblingInfo[0].slice(0, -1);
+			  //add day, date, and time to returnInfo arr
+			  returnInfo.push(text);
+			  returnInfo.push(siblingInfo[2]);
+			  returnInfo.push(siblingInfo[4]);
+
+			  //get vaccine info
+			  prevSibling = prevSibling.previousElementSibling;
+			  sibling = prevSibling.innerHTML;
+			  siblingInfo = sibling.split(" ");
+			  //add vaccine type to returnInfo arr
+			  returnInfo.push(siblingInfo[1]);
+
+			  //get address
+			  prevSibling = prevSibling.previousElementSibling;
+			  sibling = prevSibling.innerHTML;
+			  //add address of the clinic to the returnInfo arr
+			  returnInfo.push(sibling);
+
+			  //get name
+			  prevSibling = prevSibling.previousElementSibling;
+			  sibling = prevSibling.innerHTML;
+			  //push clinic name to the returnInfo arr
+			  returnInfo.push(sibling);
+
+			  //retinfo = [weekday, date, time, vaccine, address, name]
+
+
+			  //calls the javascript schedule function which sends the appointment info
+			  //to the server to schedule
+			  schedule(returnInfo);
+		      };
+
+		//define the css for the dynamically created display
+	        div.className = "float-child";
+
+		//add the clinic name text to the head element
+		head.innerHTML = arr[0]
+
+		//Grab the parent for all of the dynamically created child divs      
+	        var element = document.querySelector(".float-container");
+
+		//append the match's div to the parent
+	        element.appendChild(div);
+
+		//add the clinic name to the match's div
+		div.appendChild(head);
+
+		//add the location data to the location element      
+	        loc.innerHTML = arr[1];
+
+		//append the location object to the match's div
+	        div.appendChild(loc);
+
+		//add the vaccine info to the vaccine element
+	        vacc.innerHTML = "Vaccine: " + arr[2];
+
+		//append the vaccine object to the match's div
+	        div.appendChild(vacc);
+
+		//add the time info to the time element
+	        time.innerHTML = arr[3] + ", Date: " + arr[4] + " at " + arr[5];
+
+		//append the time object to the match's div
+	        div.appendChild(time);
+
+		//append the button object to the match's div
+		div.appendChild(btn);
+	      }
+	    }
+    );
+  };
+
+  //this function will send the selected appointment info to the server to schedule
+  function schedule(returnInfo){
+
+	  //send the schedule info to the server
+	  $.getJSON('/_schedule', {place:returnInfo[5], address:returnInfo[4], vaccine:returnInfo[3], day:returnInfo[0], time:returnInfo[2], date:returnInfo[1]},
+		  function(data){
+			//load the confirmation screen
+			location.href = "/schedule";
+		  }
+	  );
+   
+   
+   
+  }
+
+</script>
+
+</body>
+	
+</html>
+
+

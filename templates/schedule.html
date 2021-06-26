@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!-- 
+File: schedule.html
+Purpose: display the confirmation code for the scheduled appointment
+Authors: Max Hopkins
+-->
+<html>
+<head>
+</head>
+
+<body>
+	<h1>CONFIRMATION CODE: {{ code }}</h1>
+	<h4> Please make sure you write this code down, as you will not be able to cancel an appointment
+		without it </h4>
+	<button onclick="returnhome()">Return to home</button>
+</body>
+
+<script type="text/javascript">
+	function returnhome(){
+	//return to the main page when the Return to home button is pressed
+	  location.href='/index'
+	}
+</script>
+	
+</html>
