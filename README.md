@@ -1,4 +1,4 @@
-# 
+# Vaccination Distribution System
 1. This vaccination distribution system provides an interface that gives users the ability to search for and 'schedule' Covid-19 vaccine appointments based on three specific criteria: The
 distance from the user to the vaccination clinic, the type of vaccine, and day/time the user wishes to receive the vaccine.
 
